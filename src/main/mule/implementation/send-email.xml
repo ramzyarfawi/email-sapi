@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:email="http://www.mulesoft.org/schema/mule/email" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd">
+	<flow name="send-emailFlow" doc:id="502ca311-e706-4971-8868-674717b72179" >
+		<try doc:name="Try" doc:id="78995380-ec8a-4855-bdb3-65bf0100ebf5" >
+			<email:send doc:id="c15a8057-1a75-4b9a-876a-7dee6f169b86" toAddresses="#[payload.to]" fromAddress="#[payload.from]" subject="#[payload.subject]" ccAddresses="#[payload.cc]" bccAddresses="#[payload.bcc]" config-ref="Email_SMTP">
+			<email:body contentType="#[p('contentType')]" encoding="#[p('encoding')]">
+				<email:content><![CDATA[#[output application/java
+---
+payload.text]]]></email:content>
+			</email:body>
+		</email:send>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e0f98207-9a7d-4716-8f54-f0848c49ece2" >
+					<logger level="ERROR" doc:name="Logger" doc:id="978f1e89-6b5e-4bf8-a94b-7a0359b000cc" message='#["An error occured while sending the email due to " ++ (error.description default "")]'/>
+					<set-variable value="503" doc:name="Set httpStatus" doc:id="9bb26a0e-7f08-47b8-9fd6-c238d7c7c5d4" variableName="httpStatus"/>
+					<set-payload value='#[vars.httpStatus]' doc:name="Set Payload" doc:id="a611f15c-79ef-4e66-8c56-dce66242b581" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<set-variable value="202" doc:name="Set httpStatus" doc:id="fd158344-8bf3-49bf-b11b-f8cfc1561afd" variableName="httpStatus" />
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="af1d9bfd-ed87-4b03-9fe7-00e4eb29fb1a" />
+	</flow>
+</mule>

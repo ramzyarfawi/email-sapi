@@ -1,0 +1,8 @@
+{
+  "minMuleVersion": "4.5.0",
+  "secureProperties" : [
+    "smtp.user",
+    "smtp.password",
+    "config.key"
+  ]
+}

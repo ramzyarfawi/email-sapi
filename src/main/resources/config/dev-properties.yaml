@@ -1,0 +1,6 @@
+apiId: "19343452"
+smtp:
+  host: "smtp.gmail.com"
+  port: "465"
+contentType: "text/html"
+encoding: "ISO-8859-1"
